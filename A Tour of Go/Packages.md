@@ -424,11 +424,11 @@ A `struct` is a collection of `fields`
         }
         ```
 - **Slice default**
-```go 
-a[:x]//a slice of array "a" with the range [0 : x)
-a[x:]//a slice of array "a" with the range [x : n] where n is the length of array "a"
-a[:]//It is "a" itself
-```
+    ```go 
+    a[:x]//a slice of array "a" with the range [0 : x)
+    a[x:]//a slice of array "a" with the range [x : n] where n is the length of array "a"
+    a[:]//It is "a" itself
+    ```
 
 - **Slice has both `lenght` and `capacity`**
 - **`length`**:The number of elements that the slice contains
@@ -459,6 +459,34 @@ a[:]//It is "a" itself
 - `range` returns two value
     - the index `i`
     - a copy of element at index `i`
+- You can skip the index of value by assigning `_`
+- If you want the index only, drop the `element` part
+    ```go
+    //example
+    package main
+
+    import "fmt"
+
+    func main() {
+        array := make([]int, 10)
+        for i := range array {//simply drop the `element` part
+            pow[i] = 1 << uint(i)
+            /* 
+            pow[0] = 1 << 0
+            pow[1] = 1 << 1
+            .
+            .
+            .
+            and so on
+            */
+        }
+
+        for _, value := range pow {//simply put `_` to drop the index
+            fmt.Println(value)//?
+        }
+    }
+    ```
+
 
 
 
