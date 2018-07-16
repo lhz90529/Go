@@ -356,3 +356,109 @@ A `struct` is a collection of `fields`
 
         fmt.Println(v)
     }
+
+#### Struct Literals
+- TODO 
+
+#### Arrays
+- `[n]T` is an array of `n` values of type `T`
+- **Array declaration:**
+    ```go
+    var name[n]T//create an array of n elements of type T
+    ```
+- **Array declaration and initialization**
+    ```go
+    array := [size]{ele1, ele2, ... elen}//declaration and initialization
+- **Example**
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+        var a[2]string
+        b := [4]int {0,1,2,3}
+        a[0] = "hello"
+        a[1] = "world"
+        fmt.Println(a)
+        fmt.Println(b)
+    }
+    ```
+
+#### Slices
+- dynamically-sized
+- a[low : high] is a range of `[low, high)`
+    ```go
+    package main
+
+    import "fmt"
+
+    func main() {
+        b := [4]int {0,1,2,3}
+        c := b[0:3]
+    }
+    ```
+
+- **Slices are references to arrays**
+    - Change of elements of a slice modifies the corresponding elements of its underlying array
+        ```go
+        import "fmt"
+
+        func main() {
+            names := [4]string{
+                "John",
+                "Paul",
+                "George",
+                "Ringo",
+            }
+            fmt.Println(names)
+
+            a := names[0:2]//a is [John, Paul]
+            b := names[1:3]//b is [Paul, George]
+            fmt.Println(a, b)
+
+            //Note the reference property of slice
+            b[0] = "XXX"//Paul ---> XXX
+            fmt.Println(a, b)//[John, XXX, XXX, George]
+            fmt.Println(names)//[John, Paul, George, Ringo]
+        }
+        ```
+- **Slice default**
+```go 
+a[:x]//a slice of array "a" with the range [0 : x)
+a[x:]//a slice of array "a" with the range [x : n] where n is the length of array "a"
+a[:]//It is "a" itself
+```
+
+- **Slice has both `lenght` and `capacity`**
+- **`length`**:The number of elements that the slice contains
+    - `length` can be obtained by `len(slice)`
+- **`capacity`**:The number of elements that the underlaying array has
+    - `capacity` can be obtained by `cap(slice)`
+- `slice` can be re-slicing, 
+
+- a `nil slice` has
+    - `lenght = 0`
+    - `capacity = 0`
+    - `no underlying array`
+- **Creating a slice with `make`**
+    - where the thrid arguments `capacity` is **optional**
+    ```go
+    a := make([]T, len, cap)//creat a zeroed array and return slice that refers to that array
+    //This is how we create dynamically allocated array
+    ```
+- **slice of slice**
+    - very much like a multi-dimensional array
+- **append new element to slice**
+    - `func(s []T, ele...T)`
+        - append a list of elements of type `T` onto slice `s`
+        - the return is `s + appending elements`
+
+#### Range
+- `range` is a way to iterate over a slice or map
+- `range` returns two value
+    - the index `i`
+    - a copy of element at index `i`
+
+
+
