@@ -484,9 +484,34 @@ A `struct` is a collection of `fields`
         for _, value := range pow {//simply put `_` to drop the index
             fmt.Println(value)//?
         }
+        //What is the return value of range
     }
     ```
 
+#### Exercise 
+```go
+package main
 
+import "golang.org/x/tour/pic"
 
+func Pic(dx, dy int) [][]uint8 {
+    ret := make([][]uint8, dy)
+    for i := range ret {
+        ret[i] = make([]uint8, dx)
+    }
+    
+    for x := 0; x < dx; x++ {
+        for y := 0; y < dy; y++ {
+            ret[x][y] = uint8((x + y) / 2)
+        }
+    }
+    
+    
+    return ret 
+}
+
+func main() {
+    pic.Show(Pic)
+}
+```
 
