@@ -515,3 +515,181 @@ func main() {
 }
 ```
 
+
+#### Map 
+> Associative data structure 
+- **Initialize a map**
+    ```go
+    m := make(map[keyType]valueType)
+    //For example
+    m := make(map[string]int)//This creat and initialize a map that maps string to int
+    ```
+- **Assignment**
+    ```go
+    m[key] = value
+    ```
+- **Map literal**
+    - **Initialize map with initial elements**
+    ```go
+    var m = map[string]int {
+        "Amherst College" : 1,
+        "Umass Amherst" : 2,
+    }
+    //
+    ```
+- **Mutating Maps**
+    - **insertion** or **update**: `m[key] = ele`
+    - **retrival**: `ele = m[key]`
+    - **deletion**: `delete(m, key)` ---> delete the `<key, val>` pair with the specified key 
+    - Test if a key is present in map: `elem, ok := m[key]`
+        - if `key` is in `m`, 
+            - `ok` is set to be `true`
+            - the desired element will be return to `elem`
+        - else
+            - `ok` is set to be `false`
+            - `elem` is set to be zero-value of the type of the element
+
+    - **TODO: Word Count**
+
+
+#### Function values
+> You can pass `function` as argument, like a variable, into another `function`
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+func main() {
+	hypot := func(x, y float64) float64 {//hypot is actually a function
+		return math.Sqrt(x*x + y*y)
+	}
+	fmt.Println(hypot(5, 12))//call the hypot function with 2 arguments
+
+    fmt.Println(compute(hypot))//pass the hypot function to compute, and do what exactly hypot does
+    fmt.Println(compute(math.Pow))//compute 3^4
+}
+```
+
+#### Function closure
+```go
+
+import "fmt"
+
+//adder() is a function that receives no argument
+//and return a reference varialbe to a function
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func main() {
+    pos, neg := adder(), adder()//pos and neg are independent to each other
+    //sum behaves like a global variable to pos and neg
+    //which means, either pos and neg has its own global variable sum
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i),
+			neg(-2*i),
+		)
+    }
+    /* detailed explanations:
+            pSum    nSum    pos(i)  neg(i)
+    i = 0:  0       0       0       0
+    i = 1:  0       0       1       -2
+    i = 2:  1       -2      3       -6
+    i = 3:  3       -6      6       -12
+    i = 4:  6       -12     10      -24
+    .
+    .
+    .
+    and so on
+    */
+}
+```
+- Pay attention to `the exercise: fibonacci`
+
+#### Methods
+- Go doesn't have classes
+- We can define `methods` for `struct`
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "math"
+    )
+
+    type Vertex struct {
+        X, Y float64
+    }
+
+    func (v Vertex) Abs() float64{//This is a method
+        return math.Sqrt(v.X * v.X + v.Y * v.Y)
+    }
+    //v Vertex is the receiver argument for Abs()
+    //float64 is the return type of Abs()
+    //method Abs() can be thought as a behavior of struct Vertex
+
+    func main() {
+        v := Vertex{3,4}
+        fmt.Println(v.Abs())
+    }
+    ```
+
+- **Methods are functions**
+- A `method` is just a `function` with a `receiver argument`
+    ```go
+    //write the above program in different way, but they behaves very much the same
+    package main 
+
+    import (
+        "fmt"
+        "math"
+    )
+
+    type Vertex struct {
+        X, Y float64
+    }
+
+    func Abs(v Vertex) float64 {//This is a function
+        return math.Sqrt(v.X * v.X + v.Y * v.Y) 
+    }
+
+    func main() {
+        v := Vertex{3, 4}
+        fmt.Println(Abs(v))
+    }
+    ```
+- **You can even define method for `non-struct type`**
+
+#### Pointer receivers
+`method` can have receiver type of `*T` ---> a pointer.
+> It's a great way to have your method receive a pointer argument if you want to **modify** the struct directly
+
+#### Pointers and functions
+- Function is quite **picky**
+    - you cannot pass `argument` into `function` with **wrong type**
+- Method is **smart**
+    - you can use either `a actual struct` or `a pointer` to call the `method`, `method` will intepret the struct as the type of its receiver exactly.
+        ```
+        For example,
+        If you define a method with receiver type of pointer,
+            no matter what you are using to call the method, the Go intepreter will automaticcaly convert it to the reciver type
+        ```
+
+#### Choosing a value or a pointer
+- There are 2 reasons to use pointer
+    - you want to modify the content
+    - avoid copying the value on each method call. This can be more efficient if the receiver is a large struct
+        - i.e. **avoid deep copy**
